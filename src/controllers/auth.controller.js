@@ -1,44 +1,22 @@
-import { loginService, signupService } from "../services/auth.service.js";
+import { async_handler } from "../utils/async_handler.util.js";
+import { send_success_response } from "../utils/response.util.js";
+import { login_admin, get_current_admin } from "../services/auth.service.js";
 
-export const login = async (req, res) => {
-  try {
-    const user = await loginService(req.body);
+/**
+ * Authenticate admin with email and password.
+ */
+export const login = async_handler(async (req, res) => {
+  const { email, password } = req.body;
+  const result = await login_admin({ email, password });
 
-    return res.status(200).json({
-      success: true,
-      message: "Login successful.",
-      data: user,
-    });
-  } catch (error) {
-    return res.status(401).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+  return send_success_response(res, 200, "Authentication successful.", result);
+});
 
-export const signup = async (req, res) => {
-  try {
-    const user = await signupService(req.body);
+/**
+ * Retrieve the authenticated admin profile.
+ */
+export const get_me = async_handler(async (req, res) => {
+  const admin = await get_current_admin(req.user.id);
 
-    return res.status(201).json({
-      success: true,
-      message: "Sign up Successful",
-      data: user,
-    });
-  } catch (error) {
-    console.error(error);
-
-    if (error.code === "23505") {
-      return res.status(409).json({
-        success: false,
-        message: "Email already exists.",
-      });
-    }
-
-    return res.status(500).json({
-      success: false,
-      message: "Internal Server Error.",
-    });
-  }
-};
+  return send_success_response(res, 200, "Admin profile retrieved successfully.", { admin });
+});

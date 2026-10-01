@@ -4,6 +4,7 @@ jspm_packages/
 web_modules/
 db_dump/
 uploads/
+scripts/seed_admin.js
 
 # Environment files
 .env

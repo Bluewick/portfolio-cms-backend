@@ -1,47 +1,41 @@
 import pg from "pg";
-import dotenv from "dotenv";
+import { env_config } from "./env.config.js";
 
-dotenv.config();
-
-const MODE = process.env.NODE_ENV || "development";
 const { Pool } = pg;
+const MODE = env_config.node_env;
 
 const pool = MODE === "production"
   ? new Pool({
-      connectionString: process.env.DATABASE_URL,
+      connectionString: env_config.db.connection_string,
       ssl: { rejectUnauthorized: false },
     })
   : new Pool({
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
+      host: env_config.db.host,
+      port: env_config.db.port,
+      user: env_config.db.user,
+      password: env_config.db.password,
+      database: env_config.db.name,
       max: 20,
       idleTimeoutMillis: 30000,
       connectionTimeoutMillis: 2000,
     });
 
-
 pool.on("connect", (client) => {
-  console.log(`Connected to PostgreSQL Database: ${client.database}`);
+  client.query("SET search_path TO public");
+  console.log(`[PostgreSQL] Client connected to database: ${client.database}`);
 });
 
 pool.on("error", (err) => {
-  console.error("Unexpected error on idle PostgreSQL client:", err);
+  console.error("[PostgreSQL] Unexpected error on idle client:", err);
   process.exit(-1);
 });
 
-// if (MODE === 'production') {
-pool.on("connect", (client) => {
-  client.query("SET search_path TO public");
-  console.log(`Connected to PostgreSQL Database: ${client.database}`);
-});
-// }
-
 pool.query("SELECT current_database(), current_schema()", (err, res) => {
-  if (err) console.error(err);
-  else console.log("Currently connected to:", res.rows[0]);
+  if (err) {
+    console.error("[PostgreSQL] Initial connection error:", err.message);
+  } else {
+    console.log("[PostgreSQL] Successfully verified connection:", res.rows[0]);
+  }
 });
 
 export const query = (text, params) => pool.query(text, params);
