@@ -1,10 +1,17 @@
 import express from "express";
 import cors from "cors";
 import pool from "./config/db.js";
-import auth_routes from "./routes/auth.routes.js";
 import dotenv from "dotenv";
 import helmet from "helmet";
 import { error_handler_middleware } from "./middleware/error.middleware.js";
+
+import auth_routes from "./routes/auth.routes.js";
+import media_routes from "./routes/media.routes.js";
+import { public_about_router, admin_about_router } from "./routes/about.routes.js";
+import { public_skill_router, admin_skill_router } from "./routes/skill.routes.js";
+import { public_experience_router, admin_experience_router } from "./routes/experience.routes.js";
+import { public_service_router, admin_service_router } from "./routes/service.routes.js";
+import { public_testimonial_router, admin_testimonial_router } from "./routes/testimonial.routes.js";
 
 dotenv.config();
 
@@ -53,6 +60,20 @@ app.use(express.json());
 
 
 app.use("/api/admin/auth", auth_routes);
+app.use("/api/admin/media", media_routes);
+
+app.use("/api/admin/about", admin_about_router);
+app.use("/api/admin/skills", admin_skill_router);
+app.use("/api/admin/experiences", admin_experience_router);
+app.use("/api/admin/services", admin_service_router);
+app.use("/api/admin/testimonials", admin_testimonial_router);
+
+// Public Portfolio Routes
+app.use("/api/about", public_about_router);
+app.use("/api/skills", public_skill_router);
+app.use("/api/experiences", public_experience_router);
+app.use("/api/services", public_service_router);
+app.use("/api/testimonials", public_testimonial_router);
 
 app.get("/", (req, res) => {
   res.send("Backend Server is running 🚀");
