@@ -12,6 +12,9 @@ import { public_skill_router, admin_skill_router } from "./routes/skill.routes.j
 import { public_experience_router, admin_experience_router } from "./routes/experience.routes.js";
 import { public_service_router, admin_service_router } from "./routes/service.routes.js";
 import { public_testimonial_router, admin_testimonial_router } from "./routes/testimonial.routes.js";
+import { public_project_router, admin_project_router } from "./routes/project.routes.js";
+import { public_blog_router, admin_blog_router } from "./routes/blog.routes.js";
+import { public_contact_router, admin_contact_router } from "./routes/contact.routes.js";
 
 dotenv.config();
 
@@ -67,6 +70,9 @@ app.use("/api/admin/skills", admin_skill_router);
 app.use("/api/admin/experiences", admin_experience_router);
 app.use("/api/admin/services", admin_service_router);
 app.use("/api/admin/testimonials", admin_testimonial_router);
+app.use("/api/admin/projects", admin_project_router);
+app.use("/api/admin/blogs", admin_blog_router);
+app.use("/api/admin/contact", admin_contact_router);
 
 // Public Portfolio Routes
 app.use("/api/about", public_about_router);
@@ -74,6 +80,9 @@ app.use("/api/skills", public_skill_router);
 app.use("/api/experiences", public_experience_router);
 app.use("/api/services", public_service_router);
 app.use("/api/testimonials", public_testimonial_router);
+app.use("/api/projects", public_project_router);
+app.use("/api/blogs", public_blog_router);
+app.use("/api/contact", public_contact_router);
 
 app.get("/", (req, res) => {
   res.send("Backend Server is running 🚀");
