@@ -15,6 +15,7 @@ import { public_testimonial_router, admin_testimonial_router } from "./routes/te
 import { public_project_router, admin_project_router } from "./routes/project.routes.js";
 import { public_blog_router, admin_blog_router } from "./routes/blog.routes.js";
 import { public_contact_router, admin_contact_router } from "./routes/contact.routes.js";
+import seo_routes from "./routes/seo.routes.js";
 
 dotenv.config();
 
@@ -83,6 +84,9 @@ app.use("/api/testimonials", public_testimonial_router);
 app.use("/api/projects", public_project_router);
 app.use("/api/blogs", public_blog_router);
 app.use("/api/contact", public_contact_router);
+
+// SEO Hydration Routes (Prefix with API so they still hit this server)
+app.use("/", seo_routes);
 
 app.get("/", (req, res) => {
   res.send("Backend Server is running 🚀");
